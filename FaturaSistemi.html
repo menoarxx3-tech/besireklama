@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Besi Reklama · Menaxhimi Produkteve</title>
+  <!-- Bootstrap 5 + Icons + Font -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="html2pdf.bundle.min.js"></script>
+  <!-- html2pdf (për PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background: #f0f4fa; min-height: 100vh; }
+    
+    /* Glassmorphism Cards */
+    .glass-card {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      border-radius: 24px;
+      transition: all 0.2s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
+    
+    .login-card {
+      max-width: 440px;
+      margin: 10vh auto;
+      padding: 2.8rem 2.2rem;
+    }
+    .dashboard-card {
+      padding: 1.8rem 1.8rem;
+      margin-bottom: 1.8rem;
+    }
+    
+    /* Butonat */
+    .btn-primary-custom {
+      background: linear-gradient(135deg, #1a2b4c 0%, #2a3f64 100%);
+      border: none;
+      color: white;
+      border-radius: 60px;
+      padding: 0.6rem 2rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(26,43,76,0.25);
+    }
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(26,43,76,0.35);
+      color: white;
+    }
+    .btn-primary-custom:active { transform: translateY(0); }
+    
+    .btn-outline-custom {
+      border: 2px solid #1a2b4c;
+      color: #1a2b4c;
+      border-radius: 60px;
+      padding: 0.4rem 1.6rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      background: transparent;
+    }
+    .btn-outline-custom:hover {
+      background: #1a2b4c;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26,43,76,0.2);
+    }
+    
+    .btn-success-custom {
+      background: linear-gradient(135deg, #1e7e34 0%, #2d9b4a 100%);
+      border: none;
+      color: white;
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(30,126,52,0.25);
+    }
+    .btn-success-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30,126,52,0.35);
+      color: white;
+    }
+    
+    .btn-danger-custom {
+      background: linear-gradient(135deg, #b02a37 0%, #c0392b 100%);
+      border: none;
+      color: white;
+      border-radius: 60px;
+      padding: 0.4rem 1.4rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+    .btn-danger-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(176,42,55,0.3);
+      color: white;
+    }
+    
+    /* Badges */
+    .badge-paid { background: #1e7e34; color: white; padding: 0.4rem 1rem; border-radius: 40px; font-weight: 500; }
+    .badge-unpaid { background: #b02a37; color: white; padding: 0.4rem 1rem; border-radius: 40px; font-weight: 500; }
+    .badge-status { font-size: 0.75rem; padding: 0.35rem 1rem; border-radius: 40px; }
+    
+    /* Tabela */
+    .table th { 
+      font-weight: 600; 
+      color: #1a2b4c; 
+      border-bottom: 2px solid #e2e8f0;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .table td { vertical-align: middle; padding: 0.8rem 0.5rem; }
+    .table tr { transition: background 0.15s; }
+    .table tr:hover { background: rgba(26,43,76,0.02); }
+    
+    /* Logo */
+    .company-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .company-logo .logo-icon {
+      background: linear-gradient(135deg, #1a2b4c 0%, #2a3f64 100%);
+      color: white;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 14px rgba(26,43,76,0.25);
+    }
+    .company-logo .logo-text .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #1a2b4c;
+      letter-spacing: -0.3px;
+    }
+    .company-logo .logo-text .sub {
+      font-size: 0.7rem;
+      color: #6c7a92;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      font-weight: 600;
+    }
+    
+    /* Fatura print/PDF */
+    #invoicePrintArea {
+      background: white;
+      padding: 2.5rem 2.8rem;
+      border-radius: 20px;
+      max-width: 620px;
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      border: 1px solid #f0f2f6;
+    }
+    .invoice-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 0.5rem;
+    }
+    .invoice-brand .brand-icon {
+      background: linear-gradient(135deg, #1a2b4c 0%, #2a3f64 100%);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    .invoice-brand .brand-name {
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: #1a2b4c;
+      letter-spacing: -0.3px;
+    }
+    .invoice-brand .brand-sub {
+      font-size: 0.65rem;
+      color: #6c7a92;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+    .invoice-print-header {
+      border-bottom: 2px dashed #e2e8f0;
+      padding-bottom: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .invoice-print-footer {
+      border-top: 2px dashed #e2e8f0;
+      padding-top: 1rem;
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+    }
+    .invoice-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f0f2f6;
+    }
+    .invoice-detail-row:last-of-type { border-bottom: none; }
+    .invoice-total {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a2b4c;
+      padding-top: 0.8rem;
+      border-top: 2px solid #1a2b4c;
+      margin-top: 0.4rem;
+    }
+    .invoice-number {
+      font-size: 0.8rem;
+      color: #6c7a92;
+      font-weight: 500;
+    }
+    
+    /* Inputet */
+    .form-control, .form-select {
+      border-radius: 14px;
+      border: 1.5px solid #e2e8f0;
+      padding: 0.6rem 1rem;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #1a2b4c;
+      box-shadow: 0 0 0 4px rgba(26,43,76,0.08);
+    }
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #2d3748;
+      margin-bottom: 0.3rem;
+    }
+    
+    /* Scroll */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #f0f4fa; }
+    ::-webkit-scrollbar-thumb { background: #c4cddb; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a0adc0; }
+    
+    .footer-small { font-size: 0.8rem; color: #8a9bb0; }
+    .stat-box {
+      background: white;
+      border-radius: 16px;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #eef2f7;
+    }
+    
+    /* Print styles */
+    @media print {
+      body * { visibility: hidden; }
+      #invoicePrintArea, #invoicePrintArea * { visibility: visible; }
+      #invoicePrintArea { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; border-radius: 0; padding: 2rem; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app" class="container py-4">
+
+    <!-- ============ LOGIN ============ -->
+    <div id="loginView" class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="glass-card login-card">
+          <div class="text-center mb-4">
+            <div class="company-logo justify-content-center">
+              <div class="logo-icon">B</div>
+              <div class="logo-text">
+                <div class="brand">Besi Reklama</div>
+                <div class="sub">Print · Engraving</div>
+              </div>
+            </div>
+            <p class="text-secondary small mt-2" style="font-weight:500;">Sistemi i menaxhimit të produkteve</p>
+          </div>
+          <form id="loginForm">
+            <div class="mb-3">
+              <label class="form-label">Emri përdorues</label>
+              <input type="text" id="usernameInput" class="form-control form-control-lg" placeholder="admin" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Fjalëkalimi</label>
+              <input type="password" id="passwordInput" class="form-control form-control-lg" placeholder="••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary-custom w-100 btn-lg"> 
+              <i class="bi bi-arrow-right-circle me-2"></i>Kyçu
+            </button>
+            <div id="loginError" class="text-danger mt-3 small text-center d-none">Kredencialet janë të gabuara.</div>
+          </form>
+          <div class="mt-3 text-center footer-small">
+            <i class="bi bi-shield-lock me-1"></i> admin / besi01
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <div id="dashboardView" style="display: none;">
+
+      <!-- Header -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="company-logo">
+          <div class="logo-icon">B</div>
+          <div class="logo-text">
+            <div class="brand">Besi Reklama</div>
+            <div class="sub">Print · Engraving</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          <span class="badge bg-light text-dark px-3 py-2 rounded-pill" style="font-weight:500;">
+            <i class="bi bi-person-circle me-1"></i> admin
+          </span>
+          <button id="logoutBtn" class="btn btn-outline-custom"><i class="bi bi-box-arrow-right me-1"></i>Dil</button>
+        </div>
+      </div>
+
+      <!-- ====== 1. KRJO PRODUKT ====== -->
+      <div class="glass-card dashboard-card">
+        <h5 class="fw-semibold mb-3" style="color:#1a2b4c;">
+          <i class="bi bi-plus-circle me-2" style="color:#2a3f64;"></i>Shto produkt në listë
+        </h5>
+        <form id="productForm" class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Produkti</label>
+            <input type="text" id="prodName" class="form-control" placeholder="p.sh. Kimik" required>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Data</label>
+            <input type="text" id="prodDate" class="form-control" placeholder="01/01/2026" value="">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Çmimi (€)</label>
+            <input type="number" id="prodPrice" class="form-control" placeholder="100" step="0.01" required>
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">Sasia</label>
+            <input type="number" id="prodQty" class="form-control" placeholder="3" required>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Statusi</label>
+            <select id="prodStatus" class="form-select">
+              <option value="paguar">✅ Paguar</option>
+              <option value="prapaguar" selected>⏳ Pa paguar</option>
+            </select>
+          </div>
+          <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary-custom"><i class="bi bi-save me-1"></i>Krijo</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ====== 2. LISTA E PRODUKTEVE ====== -->
+      <div class="glass-card dashboard-card">
+        <div class="d-flex justify-content-between flex-wrap mb-3">
+          <h5 class="fw-semibold" style="color:#1a2b4c;">
+            <i class="bi bi-list-ul me-2" style="color:#2a3f64;"></i>Lista e produkteve
+          </h5>
+          <span class="badge bg-light text-dark rounded-pill px-3 py-2" style="font-weight:500;">
+            <i class="bi bi-clock-history me-1"></i> Historik raport
+          </span>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle" id="productTable">
+            <thead>
+              <tr>
+                <th>Produkt</th><th>Data</th><th>Çmimi</th><th>Sasia</th><th>Total</th><th>Statusi</th><th>Veprim</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
+          </table>
+        </div>
+        <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+          <div style="font-weight:500; color:#2d3748;">
+            <i class="bi bi-info-circle me-1"></i> <span id="totalItems">0</span> produkte
+          </div>
+          <div>
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill" style="font-weight:600;">
+              <i class="bi bi-check-circle me-1"></i> Paguar: <span id="paidCount">0</span>
+            </span>
+            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill ms-2" style="font-weight:600;">
+              <i class="bi bi-hourglass-split me-1"></i> Pa paguar: <span id="unpaidCount">0</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== 3. SISTEMI FATURAVE ====== -->
+      <div class="glass-card dashboard-card">
+        <h5 class="fw-semibold mb-3" style="color:#1a2b4c;">
+          <i class="bi bi-receipt me-2" style="color:#2a3f64;"></i>Faturat · Besi Reklama
+        </h5>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <form id="invoiceForm" class="row g-2">
+              <div class="col-7">
+                <input type="text" id="invoiceProduct" class="form-control" placeholder="Produkti" required>
+              </div>
+              <div class="col-5">
+                <input type="number" id="invoiceAmount" class="form-control" placeholder="€" step="0.01" required>
+              </div>
+              <div class="col-12 d-grid">
+                <button type="submit" class="btn btn-success-custom"><i class="bi bi-plus-circle me-1"></i>Krijo faturë</button>
+              </div>
+            </form>
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+              <button id="printInvoiceBtn" class="btn btn-outline-custom btn-sm" style="padding:0.4rem 1.2rem;">
+                <i class="bi bi-printer me-1"></i>Printo
+              </button>
+              <!--<button id="pdfInvoiceBtn" class="btn btn-primary-custom btn-sm" style="padding:0.4rem 1.2rem;">
+                <i class="bi bi-file-pdf me-1"></i>PDF
+              </button> -->
+              <button id="clearInvoicesBtn" class="btn btn-danger-custom btn-sm" style="padding:0.4rem 1.2rem;">
+                <i class="bi bi-trash3 me-1"></i>Pastro
+              </button>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="bg-white p-3 rounded-4 border" style="max-height: 220px; overflow-y: auto; border-color:#e2e8f0 !important;">
+              <span class="fw-semibold small text-uppercase text-secondary" style="letter-spacing:0.5px;">
+                <i class="bi bi-clock me-1"></i>Faturat e fundit
+              </span>
+              <ul class="list-group list-group-flush mt-2" id="invoiceList" style="border:none;"></ul>
+            </div>
+          </div>
+        </div>
+        <!-- Zona e faturës për printim/PDF -->
+        <div id="invoicePreviewArea" class="mt-3" style="display: none;">
+          <div id="invoicePrintArea"></div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center footer-small mt-4 pt-3 border-top d-flex justify-content-between flex-wrap">
+        <span><i class="bi bi-brush me-1"></i> Besi Reklama · Print &amp; Engraving</span>
+        <span><i class="bi bi-database-slash me-1"></i> Pa databazë</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ========== STATE ==========
+      let products = [];
+      let invoices = [];
+
+      // ========== DOM REFS ==========
+      const loginView = document.getElementById('loginView');
+      const dashboardView = document.getElementById('dashboardView');
+      const loginForm = document.getElementById('loginForm');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const loginError = document.getElementById('loginError');
+      const usernameInput = document.getElementById('usernameInput');
+      const passwordInput = document.getElementById('passwordInput');
+
+      const productForm = document.getElementById('productForm');
+      const prodName = document.getElementById('prodName');
+      const prodDate = document.getElementById('prodDate');
+      const prodPrice = document.getElementById('prodPrice');
+      const prodQty = document.getElementById('prodQty');
+      const prodStatus = document.getElementById('prodStatus');
+      const productTableBody = document.getElementById('productTableBody');
+      const totalItems = document.getElementById('totalItems');
+      const paidCount = document.getElementById('paidCount');
+      const unpaidCount = document.getElementById('unpaidCount');
+
+      const invoiceForm = document.getElementById('invoiceForm');
+      const invoiceProduct = document.getElementById('invoiceProduct');
+      const invoiceAmount = document.getElementById('invoiceAmount');
+      const invoiceList = document.getElementById('invoiceList');
+      const printInvoiceBtn = document.getElementById('printInvoiceBtn');
+      const pdfInvoiceBtn = document.getElementById('pdfInvoiceBtn');
+      const clearInvoicesBtn = document.getElementById('clearInvoicesBtn');
+      const invoicePreviewArea = document.getElementById('invoicePreviewArea');
+      const invoicePrintArea = document.getElementById('invoicePrintArea');
+
+      // ========== FUNKSIONET ==========
+
+      function renderProducts() {
+        let html = '';
+        products.forEach((p, index) => {
+          const total = (p.price * p.qty).toFixed(2);
+          const statusClass = p.status === 'paguar' ? 'badge-paid' : 'badge-unpaid';
+          const statusLabel = p.status === 'paguar' ? '✅ Paguar' : '⏳ Pa paguar';
+          html += `<tr>
+            <td><strong>${p.name}</strong></td>
+            <td>${p.date}</td>
+            <td>${p.price.toFixed(2)} €</td>
+            <td>${p.qty}</td>
+            <td>${total} €</td>
+            <td><span class="badge ${statusClass} badge-status">${statusLabel}</span></td>
+            <td>
+              <button class="btn btn-sm btn-outline-danger rounded-5 px-3" data-index="${index}" onclick="window.deleteProduct(${index})">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </td>
+          </tr>`;
+        });
+        productTableBody.innerHTML = html || `<tr><td colspan="7" class="text-center text-secondary py-4"><i class="bi bi-inbox me-2"></i>Nuk ka produkte</td></tr>`;
+        const paid = products.filter(p => p.status === 'paguar').length;
+        const unpaid = products.filter(p => p.status === 'prapaguar').length;
+        totalItems.textContent = products.length;
+        paidCount.textContent = paid;
+        unpaidCount.textContent = unpaid;
+      }
+
+      function renderInvoices() {
+        invoiceList.innerHTML = '';
+        if (invoices.length === 0) {
+          invoiceList.innerHTML = `<li class="list-group-item text-secondary small bg-transparent border-0"><i class="bi bi-file-earmark-text me-1"></i>Asnjë faturë</li>`;
+          invoicePreviewArea.style.display = 'none';
+          return;
+        }
+        const recent = invoices.slice(-5).reverse();
+        recent.forEach((inv) => {
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between align-items-start bg-transparent border-0 ps-0 py-2';
+          li.innerHTML = `
+            <div><i class="bi bi-receipt-cutoff me-2 text-primary"></i><strong>${inv.product}</strong>  <span class="text-secondary" style="font-size:0.8rem;">${inv.date}</span></div>
+            <span class="fw-bold">${inv.amount.toFixed(2)} €</span>
+          `;
+          invoiceList.appendChild(li);
+        });
+        updateInvoicePreview();
+      }
+
+      function updateInvoicePreview() {
+        if (invoices.length === 0) {
+          invoicePreviewArea.style.display = 'none';
+          return;
+        }
+        const last = invoices[invoices.length - 1];
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('sq-AL') + ' ' + now.toLocaleTimeString('sq-AL', {hour:'2-digit', minute:'2-digit'});
+        
+        invoicePrintArea.innerHTML = `
+          <div class="invoice-print-header">
+            <div class="invoice-brand">
+              <div class="brand-icon">B</div>
+              <div>
+                <div class="brand-name">Besi Reklama</div>
+                <div class="brand-sub">Print · Engraving</div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span class="invoice-number"><strong>Faturë #${invoices.length}</strong></span>
+              <span class="invoice-number">${dateStr}</span>
+            </div>
+          </div>
+          <div class="invoice-detail-row">
+            <span><strong>Produkti</strong></span>
+            <span>${last.product}</span>
+          </div>
+          <div class="invoice-detail-row">
+            <span><strong>Shuma</strong></span>
+            <span>${last.amount.toFixed(2)} €</span>
+          </div>
+          <div class="invoice-detail-row">
+            <span><strong>Kompani</strong></span>
+            <span>Besi Reklama Sh.p.k.</span>
+          </div>
+          <div class="invoice-detail-row">
+            <span><strong>TVSH</strong></span>
+            <span>0%</span>
+          </div>
+          <div class="invoice-detail-row">
+            <span><strong>Adresa</strong></span>
+            <span>Fushe Kosove, Kosovë</span>
+          </div>
+          <div class="invoice-total d-flex justify-content-between">
+            <span>TOTALI</span>
+            <span>${last.amount.toFixed(2)} €</span>
+          </div>
+          <div class="invoice-print-footer text-center">
+            <i class="bi bi-check-circle-fill text-success me-1"></i> Faturë e vlefshme · Faleminderit për besimin!
+            <br><small class="text-secondary" style="font-size:0.7rem;">Besi Reklama · Print &amp; Engraving · Fushe Kosove</small>
+          </div>
+        `;
+        invoicePreviewArea.style.display = 'block';
+      }
+
+      // Shto produkt
+      function addProduct(name, date, price, qty, status) {
+        products.push({ name, date, price: parseFloat(price), qty: parseInt(qty), status });
+        renderProducts();
+        saveState();
+      }
+
+      window.deleteProduct = function(index) {
+        if (index >= 0 && index < products.length) {
+          products.splice(index, 1);
+          renderProducts();
+          saveState();
+        }
+      };
+
+      // Shto faturë
+      function addInvoice(product, amount) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('sq-AL') + ' ' + now.toLocaleTimeString('sq-AL', {hour:'2-digit', minute:'2-digit'});
+        invoices.push({ product, amount: parseFloat(amount), date: dateStr });
+        renderInvoices();
+        saveState();
+      }
+
+      // Pastro faturat
+      function clearInvoices() {
+        if (invoices.length === 0) return;
+        if (confirm('A jeni të sigurt që doni të pastroni të gjitha faturat?')) {
+          invoices = [];
+          renderInvoices();
+          saveState();
+        }
+      }
+
+      // ========== SAVE / LOAD ==========
+      function saveState() {
+        try {
+          sessionStorage.setItem('besi_products', JSON.stringify(products));
+          sessionStorage.setItem('besi_invoices', JSON.stringify(invoices));
+        } catch(e) {}
+      }
+
+      function loadState() {
+        try {
+          const sp = sessionStorage.getItem('besi_products');
+          const si = sessionStorage.getItem('besi_invoices');
+          if (sp) products = JSON.parse(sp);
+          if (si) invoices = JSON.parse(si);
+        } catch(e) { products = []; invoices = []; }
+        renderProducts();
+        renderInvoices();
+      }
+
+      // ========== LOGIN ==========
+      function handleLogin(e) {
+        e.preventDefault();
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value.trim();
+        if (user === 'admin' && pass === 'besi01') {
+          loginError.classList.add('d-none');
+          loginView.style.display = 'none';
+          dashboardView.style.display = 'block';
+          loadState();
+        } else {
+          loginError.classList.remove('d-none');
+        }
+      }
+
+      function handleLogout() {
+        dashboardView.style.display = 'none';
+        loginView.style.display = 'block';
+        loginError.classList.add('d-none');
+        usernameInput.value = '';
+        passwordInput.value = '';
+      }
+
+      // ========== PRINT / PDF (profesional) ==========
+      function printInvoice() {
+        if (invoices.length === 0) { alert('Nuk ka faturë për të printuar.'); return; }
+        const content = document.getElementById('invoicePrintArea').innerHTML;
+        const win = window.open('', '_blank', 'width=700,height=500');
+        win.document.write(`
+          <html>
+            <head>
+              <title>Fatura Besi Reklama</title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+              <style>
+                body { padding: 2rem; background: white; font-family: 'Inter', sans-serif; }
+                #printArea { max-width: 620px; margin: 0 auto; }
+                .invoice-brand { display:flex; align-items:center; gap:16px; margin-bottom:0.5rem; }
+                .invoice-brand .brand-icon { background: #1a2b4c; color:white; width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; }
+                .invoice-brand .brand-name { font-weight:700; font-size:1.6rem; color:#1a2b4c; }
+                .invoice-brand .brand-sub { font-size:0.65rem; color:#6c7a92; text-transform:uppercase; letter-spacing:2px; font-weight:600; }
+                .invoice-print-header { border-bottom:2px dashed #e2e8f0; padding-bottom:1rem; margin-bottom:1.2rem; }
+                .invoice-detail-row { display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid #f0f2f6; }
+                .invoice-total { font-size:1.3rem; font-weight:700; color:#1a2b4c; padding-top:0.8rem; border-top:2px solid #1a2b4c; margin-top:0.4rem; display:flex; justify-content:space-between; }
+                .invoice-print-footer { border-top:2px dashed #e2e8f0; padding-top:1rem; margin-top:1.2rem; text-align:center; }
+                .invoice-number { font-size:0.8rem; color:#6c7a92; font-weight:500; }
+              </style>
+            </head>
+            <body>
+              <div id="printArea">${content}</div>
+              <script>
+                window.onload = function() { 
+                  window.print(); 
+                  setTimeout(function() { window.close(); }, 500);
+                }
+              <\/script>
+            </body>
+          </html>
+        `);
+        win.document.close();
+      }
+
+      function downloadInvoicePDF() {
+        if (invoices.length === 0) { alert('Nuk ka faturë për të ruajtur si PDF.'); return; }
+        
+        // Sigurohemi që përmbajtja të jetë e plotë
+        const element = document.getElementById('invoicePrintArea');
+        
+        // Krijojmë një kopje të elementit për PDF me stil të plotë
+        const opt = {
+          margin:        0.4,
+          filename:      'Fatura_BesiReklama.pdf',
+          image:         { type: 'jpeg', quality: 0.98 },
+          html2canvas:   { 
+            scale: 2, 
+            letterRendering: true,
+            useCORS: true
+          },
+          jsPDF:         { 
+            unit: 'in', 
+            format: 'a5', 
+            orientation: 'portrait' 
+          },
+          pagebreak:     { mode: 'avoid-all' }
+        };
+        
+        // Call html2pdf me opsionet e sakta
+        html2pdf().set(opt).from(element).save();
+      }
+
+      // ========== EVENT LISTENERS ==========
+      loginForm.addEventListener('submit', handleLogin);
+      logoutBtn.addEventListener('click', handleLogout);
+
+      productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = prodName.value.trim();
+        const date = prodDate.value.trim() || '01,01,01';
+        const price = parseFloat(prodPrice.value);
+        const qty = parseInt(prodQty.value);
+        const status = prodStatus.value;
+        if (!name || isNaN(price) || isNaN(qty) || qty < 1) {
+          alert('Plotëso të gjitha fushat (emri, çmimi, sasia).');
+          return;
+        }
+        addProduct(name, date, price, qty, status);
+        prodName.value = '';
+        prodPrice.value = '';
+        prodQty.value = '';
+        prodStatus.value = 'prapaguar';
+        prodDate.value = '01,01,01';
+      });
+
+      invoiceForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const product = invoiceProduct.value.trim();
+        const amount = parseFloat(invoiceAmount.value);
+        if (!product || isNaN(amount) || amount <= 0) {
+          alert('Shkruani produktin dhe një shumë të vlefshme.');
+          return;
+        }
+        addInvoice(product, amount);
+        invoiceProduct.value = '';
+        invoiceAmount.value = '';
+      });
+
+      printInvoiceBtn.addEventListener('click', printInvoice);
+      pdfInvoiceBtn.addEventListener('click', downloadInvoicePDF);
+      clearInvoicesBtn.addEventListener('click', clearInvoices);
+
+      // ========== INICIALIZIM ==========
+      (function init() {
+        const hasState = sessionStorage.getItem('besi_products') !== null;
+        if (!hasState) {
+          products = [
+            { name: 'Kimik', date: '01,01,01', price: 100, qty: 3, status: 'prapaguar' },
+            { name: 'Bojë', date: '15,03,25', price: 45.50, qty: 2, status: 'paguar' },
+            { name: 'Ngjitës', date: '22,07,24', price: 12.90, qty: 5, status: 'prapaguar' },
+          ];
+          invoices = [
+            { product: 'Kimik', amount: 10, date: new Date().toLocaleDateString('sq-AL') + ' 14:30' },
+            { product: 'Bojë', amount: 25.50, date: new Date().toLocaleDateString('sq-AL') + ' 09:15' },
+          ];
+          saveState();
+        } else {
+          try {
+            const sp = sessionStorage.getItem('besi_products');
+            const si = sessionStorage.getItem('besi_invoices');
+            if (sp) products = JSON.parse(sp);
+            if (si) invoices = JSON.parse(si);
+          } catch(e) {}
+        }
+        if (invoices.length > 0) {
+          setTimeout(() => { updateInvoicePreview(); }, 150);
+        }
+      })();
+
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
